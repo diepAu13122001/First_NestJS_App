@@ -1,0 +1,56 @@
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Req } from '@nestjs/common';
+import { Request } from 'express';
+import { UserService } from './user.service';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+
+@Controller('user')
+export class UserController {
+    // user Service
+    // private userService;
+    // constructor() {
+    //     this.userService = new UserService();
+    // }
+
+    constructor(private userService: UserService) { }
+
+    @Get()
+    getUsers() {
+        return this.userService.get();
+    }
+
+    @Post()
+    store(@Body() createUserDto: CreateUserDto) {
+        return this.userService.create(createUserDto);
+    }
+
+    // @Patch('/:userId')
+    // update(@Req() req: Request, @Param() param: {userId: number}) {
+    //     return this.userService.update( req, param);
+    // }
+
+    // use request payload
+    // @Patch('/:userId')
+    // update(@Body() body: any, @Param() param: {userId: number}) {
+    //     return this.userService.update( body, param);
+    // }
+
+    // body: any means: 
+    @Patch('/:userId')
+    update(
+        @Body() updateUserDto: UpdateUserDto,
+        @Param('userId', ParseIntPipe) userId: number) {
+        return this.userService.update(updateUserDto, userId);
+    }
+
+    @Get('/:userId')
+    getUser(@Param('userId', ParseIntPipe) userId: number) {
+        return this.userService.show(userId);
+    }
+
+    @Delete('/:userId')
+    deleteUser(@Param('userId', ParseIntPipe) userId: number) {
+        return this.userService.delete(userId);
+    }
+
+}
